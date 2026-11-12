@@ -1,17 +1,22 @@
-# elist_app
+# eLIST para Flutter
 
-A new Flutter project.
+Versión móvil accesible del prototipo eLIST. Los productos, el grupo y la actividad
+son datos de demostración que viven en memoria durante la sesión; no hay servidor
+ni sincronización entre dispositivos.
 
-## Getting Started
+## Ejecutar
 
-This project is a starting point for a Flutter application.
+Desde este directorio:
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+flutter pub get
+flutter run -d chrome
+```
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+Para entrar en la familia de ejemplo, usa el código `FAMILIA24`. Desde la pantalla
+de acceso también puedes crear un grupo de demostración.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Dependencias
+
+- Flutter SDK
+- `go_router`

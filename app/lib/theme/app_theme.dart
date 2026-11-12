@@ -54,10 +54,7 @@ class AppTheme {
           height: 1.5,
           color: AppColors.textoPrincipal,
         ),
-        bodyMedium: TextStyle(
-          fontSize: 14,
-          color: AppColors.textoSecundario,
-        ),
+        bodyMedium: TextStyle(fontSize: 14, color: AppColors.textoSecundario),
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.azul,
@@ -83,10 +80,19 @@ class AppTheme {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(minimumSize: const Size(48, 48)),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.superficie,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: AppColors.borde),
@@ -109,7 +115,7 @@ class AppTheme {
         backgroundColor: AppColors.azul,
         contentTextStyle: TextStyle(color: Colors.white, fontSize: 16),
         actionTextColor: Colors.white,
-        // duration: Duration(seconds: 6), // ≥ 5 s (RNF-A08)
+        showCloseIcon: false,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
