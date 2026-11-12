@@ -189,7 +189,7 @@ flutter build apk --debug
 #   - Accessibility Scanner (Play Store)
 ```
 
-## 🐛 Resolución de problemas
+##  Resolución de problemas
 
 | Problema | Solución |
 |----------|----------|
