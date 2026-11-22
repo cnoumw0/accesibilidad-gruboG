@@ -58,7 +58,7 @@ class _EditarScreenState extends State<EditarScreen> {
       _nombreController.text,
       _quantity()!,
     );
-    AppFeedback.show(context, 'Cambios guardados.');
+    AppFeedback.mostrarEnLista(context, 'Cambios guardados.');
     context.go('/lista');
   }
 
@@ -88,7 +88,7 @@ class _EditarScreenState extends State<EditarScreen> {
     );
     if (confirmed != true || !mounted) return;
     AppState.instance.eliminar(item.id);
-    AppFeedback.show(context, '${item.nombre} eliminado. Puedes deshacer.');
+    AppFeedback.mostrarEnLista(context, '${item.nombre} eliminado. Puedes deshacer.');
     context.go('/lista');
   }
 

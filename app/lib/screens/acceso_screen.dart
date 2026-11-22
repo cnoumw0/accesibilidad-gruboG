@@ -35,12 +35,12 @@ class _AccesoScreenState extends State<AccesoScreen> {
     }
     if (_creating) {
       AppState.instance.crearGrupo(_codeController.text);
-      AppFeedback.show(context, 'Grupo ${_codeController.text.trim()} creado.');
+      AppFeedback.mostrarEnLista(context, 'Grupo ${_codeController.text.trim()} creado.');
       context.go('/lista');
       return;
     }
     AppState.instance.entrar();
-    AppFeedback.show(context, 'Has entrado en Familia Gómez.');
+    AppFeedback.mostrarEnLista(context, 'Has entrado en Familia Gómez.');
     context.go('/lista');
   }
 

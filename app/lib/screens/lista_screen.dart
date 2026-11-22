@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 
@@ -6,8 +8,55 @@ import '../state/app_state.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/producto_tile.dart';
 
-class ListaScreen extends StatelessWidget {
+class ListaScreen extends StatefulWidget {
   const ListaScreen({super.key});
+
+  @override
+  State<ListaScreen> createState() => _ListaScreenState();
+}
+
+class _ListaScreenState extends State<ListaScreen> {
+  /// Aviso visible en la parte de arriba de la lista. Es el primer elemento de
+  /// la pantalla, así que TalkBack lo lee al llegar, sin depender de ningún
+  /// anuncio con temporizador. Vacío si no hay aviso.
+  String _textoAviso = '';
+  Timer? _temporizadorAviso;
+
+  /// Espera antes de mostrar el aviso: al cambiar de pantalla o de foco,
+  /// TalkBack anuncia primero la pantalla y corta lo que se esté diciendo.
+  static const _esperaAviso = Duration(milliseconds: 1500);
+
+  @override
+  void initState() {
+    super.initState();
+    AppFeedback.avisoLista.addListener(_alLlegarAviso);
+    // Aviso que llegó antes de que esta pantalla existiera (al entrar desde
+    // Añadir, Editar o Acceso).
+    _alLlegarAviso();
+  }
+
+  @override
+  void dispose() {
+    AppFeedback.avisoLista.removeListener(_alLlegarAviso);
+    _temporizadorAviso?.cancel();
+    super.dispose();
+  }
+
+  void _alLlegarAviso() {
+    final aviso = AppFeedback.avisoLista.value;
+    if (aviso == null) return;
+    // Se consume el aviso para que no vuelva a mostrarse al reabrir la lista.
+    AppFeedback.avisoLista.value = null;
+    _temporizadorAviso?.cancel();
+    if (_textoAviso.isNotEmpty) setState(() => _textoAviso = '');
+    _temporizadorAviso = Timer(_esperaAviso, () {
+      if (!mounted) return;
+      setState(() => _textoAviso = aviso.texto);
+      _temporizadorAviso = Timer(const Duration(seconds: 6), () {
+        if (mounted) setState(() => _textoAviso = '');
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +92,24 @@ class ListaScreen extends StatelessWidget {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
+              // Aviso de lo último que se ha hecho. Región en directo con
+              // texto visible: TalkBack lo lee al aparecer, también cuando el
+              // foco se mueve al cambiar un producto de sección.
+              if (_textoAviso.isNotEmpty) ...[
+                Semantics(
+                  liveRegion: true,
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEAF1F8),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFF65758B)),
+                    ),
+                    child: Text(_textoAviso),
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
               if (appState.puedeDeshacer) ...[
                 Semantics(
                   liveRegion: true,
@@ -61,7 +128,7 @@ class ListaScreen extends StatelessWidget {
                         OutlinedButton.icon(
                           onPressed: () {
                             appState.deshacer();
-                            AppFeedback.show(
+                            AppFeedback.mostrarEnLista(
                               context,
                               'Acción deshecha. Se ha restaurado el estado anterior.',
                             );
@@ -86,7 +153,7 @@ class ListaScreen extends StatelessWidget {
                 productos: pendientes,
                 onCambiarEstado: (item) {
                   appState.cambiarEstado(item.id);
-                  AppFeedback.show(
+                  AppFeedback.mostrarEnLista(
                     context,
                     '${item.nombre} marcado como comprado.',
                   );
@@ -99,7 +166,7 @@ class ListaScreen extends StatelessWidget {
                 productos: comprados,
                 onCambiarEstado: (item) {
                   appState.cambiarEstado(item.id);
-                  AppFeedback.show(
+                  AppFeedback.mostrarEnLista(
                     context,
                     '${item.nombre} marcado como pendiente.',
                   );

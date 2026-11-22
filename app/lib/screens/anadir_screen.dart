@@ -56,7 +56,7 @@ class _AnadirScreenState extends State<AnadirScreen> {
     final quantity = _cantidad()!;
     final wasDuplicate = AppState.instance.buscarDuplicado(name) != null;
     AppState.instance.anadir(name, quantity);
-    AppFeedback.show(
+    AppFeedback.mostrarEnLista(
       context,
       wasDuplicate
           ? 'Se añadieron $quantity unidades a $name.'
