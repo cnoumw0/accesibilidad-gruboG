@@ -40,7 +40,14 @@ class _EditarScreenState extends State<EditarScreen> {
   }
 
   void _save(Producto item) {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      // El error se ve bajo el campo; también se anuncia al lector de pantalla.
+      AppFeedback.announce(
+        context,
+        'No se han podido guardar los cambios. Revisa el mensaje de error bajo cada campo.',
+      );
+      return;
+    }
     final duplicate = AppState.instance.buscarDuplicado(_nombreController.text);
     if (duplicate != null && duplicate.id != item.id) {
       _formKey.currentState!.validate();
@@ -105,10 +112,12 @@ class _EditarScreenState extends State<EditarScreen> {
             TextFormField(
               controller: _nombreController,
               textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(labelText: 'Nombre'),
+              decoration: const InputDecoration(
+                labelText: 'Nombre del producto',
+              ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Falta el nombre del producto.';
+                  return 'Falta el nombre del producto. Escríbelo para guardar los cambios.';
                 }
                 final duplicate = AppState.instance.buscarDuplicado(
                   value.trim(),
@@ -127,7 +136,7 @@ class _EditarScreenState extends State<EditarScreen> {
                 labelText: 'Cantidad (unidades)',
               ),
               validator: (_) => _quantity() == null
-                  ? 'La cantidad debe ser un número entero mayor que cero.'
+                  ? 'La cantidad no es válida. Escribe un número entero mayor que cero, por ejemplo 1.'
                   : null,
             ),
             const SizedBox(height: 16),
