@@ -103,9 +103,12 @@ class _AccesoScreenState extends State<AccesoScreen> {
                       ),
                     ),
                     if (!_creating) ...[
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Text('o', textAlign: TextAlign.center),
+                      // Separador decorativo: no aporta nada al lector de pantalla.
+                      const ExcludeSemantics(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: Text('o', textAlign: TextAlign.center),
+                        ),
                       ),
                       OutlinedButton(
                         onPressed: () {
@@ -118,7 +121,7 @@ class _AccesoScreenState extends State<AccesoScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'No tienes un código de familia. Pide a un familiar que te lo envíe.',
+                        '¿No tienes un código de familia? Pide a un familiar que te lo envíe.',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
