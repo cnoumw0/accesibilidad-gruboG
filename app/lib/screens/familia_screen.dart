@@ -30,9 +30,10 @@ class FamiliaScreen extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 12),
-                    Semantics(
-                      label: 'Código de invitación: ${AppState.codigoFamilia}',
-                      child: const Text('Código de invitación: FAMILIA24'),
+                    // Solo texto visible: antes una etiqueta repetía lo mismo
+                    // y TalkBack leía el código dos veces.
+                    const Text(
+                      'Código de invitación: ${AppState.codigoFamilia}',
                     ),
                     const SizedBox(height: 8),
                     OutlinedButton.icon(
@@ -54,7 +55,13 @@ class FamiliaScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Text('Miembros', style: Theme.of(context).textTheme.titleLarge),
+            Semantics(
+              header: true,
+              child: Text(
+                'Miembros',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
             const SizedBox(height: 8),
             const Card(
               color: Colors.white,
