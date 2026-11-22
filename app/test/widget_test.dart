@@ -25,6 +25,10 @@ void main() {
     expect(find.text('Familia Gómez'), findsOneWidget);
     expect(find.text('Leche'), findsOneWidget);
     expect(find.text('Pendientes'), findsOneWidget);
+
+    // «Comprados» queda debajo de la lista y ListView solo construye lo
+    // visible, así que primero se desplaza hasta que aparece.
+    await tester.scrollUntilVisible(find.text('Comprados'), 300);
     expect(find.text('Comprados'), findsOneWidget);
   });
 }
