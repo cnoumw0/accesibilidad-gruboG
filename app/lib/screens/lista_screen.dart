@@ -132,7 +132,14 @@ class _SeccionProductos extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(titulo, style: Theme.of(context).textTheme.titleLarge),
+        // Encabezado semántico: permite saltar entre secciones con TalkBack.
+        Semantics(
+          header: true,
+          child: Text(
+            titulo,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
         const SizedBox(height: 4),
         if (productos.isEmpty)
           Padding(
