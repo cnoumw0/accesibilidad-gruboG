@@ -1,19 +1,20 @@
-// This is a basic Flutter widget test.
+// Pruebas de widget de eLIST.
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// Comprueban que se puede entrar en la lista con el código familiar y que la
+// pantalla Lista cumple las guías de accesibilidad que incluye Flutter
+// (Accessibility Guideline API).
 
 import 'package:flutter/foundation.dart' show Key;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:elist_app/main.dart';
+import 'package:elist_app/utils/app_feedback.dart';
 
 void main() {
-  testWidgets('permite entrar a la lista con el código familiar', (
+  testWidgets('permite entrar a la lista y la lista es accesible', (
     WidgetTester tester,
   ) async {
+    final handle = tester.ensureSemantics();
     await tester.pumpWidget(const ElistApp());
     await tester.enterText(
       find.byKey(const Key('familyCodeField')),
@@ -26,9 +27,21 @@ void main() {
     expect(find.text('Leche'), findsOneWidget);
     expect(find.text('Pendientes'), findsOneWidget);
 
+    // Se quita el aviso inferior para comprobar solo la pantalla Lista.
+    AppFeedback.messengerKey.currentState?.clearSnackBars();
+    await tester.pumpAndSettle();
+
+    // Objetivos táctiles de al menos 48 × 48 (Android).
+    await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+    // Todo control pulsable tiene nombre accesible.
+    await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+    // Contraste mínimo del texto (WCAG AA).
+    await expectLater(tester, meetsGuideline(textContrastGuideline));
+
     // «Comprados» queda debajo de la lista y ListView solo construye lo
     // visible, así que primero se desplaza hasta que aparece.
     await tester.scrollUntilVisible(find.text('Comprados'), 300);
     expect(find.text('Comprados'), findsOneWidget);
+    handle.dispose();
   });
 }
