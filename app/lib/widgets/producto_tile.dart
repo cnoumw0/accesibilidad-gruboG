@@ -34,7 +34,9 @@ class ProductoTile extends StatelessWidget {
               label:
                   '${producto.nombre}, ${producto.cantidad} '
                   '${producto.cantidad == 1 ? 'unidad' : 'unidades'}, $estado',
-              child: MergeSemantics(
+              // El texto visible ya está resumido en la etiqueta del contenedor;
+              // se excluye para que TalkBack no lea el producto dos veces.
+              child: ExcludeSemantics(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
