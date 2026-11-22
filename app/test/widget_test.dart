@@ -22,6 +22,8 @@ void main() {
     );
     await tester.tap(find.text('Entrar en mi familia'));
     await tester.pumpAndSettle();
+    // Deja pasar la espera del anuncio al lector de pantalla.
+    await tester.pump(const Duration(seconds: 1));
 
     expect(find.text('Familia Gómez'), findsOneWidget);
     expect(find.text('Leche'), findsOneWidget);
