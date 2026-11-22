@@ -23,7 +23,16 @@ class _AccesoScreenState extends State<AccesoScreen> {
   }
 
   void _submit() {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      // El error se ve bajo el campo; también se anuncia al lector de pantalla.
+      AppFeedback.announce(
+        context,
+        _creating
+            ? 'No se ha podido crear el grupo. Revisa el mensaje de error bajo el campo.'
+            : 'No se ha podido entrar. Revisa el mensaje de error bajo el campo.',
+      );
+      return;
+    }
     if (_creating) {
       AppState.instance.crearGrupo(_codeController.text);
       AppFeedback.show(context, 'Grupo ${_codeController.text.trim()} creado.');
