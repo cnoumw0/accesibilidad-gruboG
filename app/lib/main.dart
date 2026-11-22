@@ -17,6 +17,11 @@ class ElistApp extends StatelessWidget {
       title: 'eLIST',
       theme: AppTheme.light,
       routerConfig: appRouter,
+      // Textos internos de Material en español (p. ej. «Atrás» en lugar de
+      // «Back»), para que TalkBack no mezcle idiomas.
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const [Locale('es', 'ES')],
+      locale: const Locale('es', 'ES'),
       scaffoldMessengerKey: AppFeedback.messengerKey,
       debugShowCheckedModeBanner: false,
     );
