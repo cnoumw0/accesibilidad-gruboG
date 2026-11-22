@@ -4,7 +4,7 @@
 // pantalla Lista cumple las guías de accesibilidad que incluye Flutter
 // (Accessibility Guideline API).
 
-import 'package:flutter/foundation.dart' show Key;
+import 'package:flutter/widgets.dart' show Key, Offset;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:elist_app/main.dart';
@@ -39,7 +39,9 @@ void main() {
     expect(find.text('Comprados'), findsOneWidget);
 
     // Pantalla Añadir producto: mismas guías en sus tres estados.
-    await tester.scrollUntilVisible(find.text('Añadir producto'), -300);
+    // Se vuelve arriba del todo para que el botón no quede bajo la barra.
+    await tester.drag(find.text('Comprados'), const Offset(0, 2000));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Añadir producto'));
     await tester.pumpAndSettle();
     await _comprobarGuias(tester);
