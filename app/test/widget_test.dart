@@ -31,17 +31,46 @@ void main() {
     AppFeedback.messengerKey.currentState?.clearSnackBars();
     await tester.pumpAndSettle();
 
-    // Objetivos táctiles de al menos 48 × 48 (Android).
-    await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
-    // Todo control pulsable tiene nombre accesible.
-    await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
-    // Contraste mínimo del texto (WCAG AA).
-    await expectLater(tester, meetsGuideline(textContrastGuideline));
+    await _comprobarGuias(tester);
 
     // «Comprados» queda debajo de la lista y ListView solo construye lo
     // visible, así que primero se desplaza hasta que aparece.
     await tester.scrollUntilVisible(find.text('Comprados'), 300);
     expect(find.text('Comprados'), findsOneWidget);
+
+    // Pantalla Añadir producto: mismas guías en sus tres estados.
+    await tester.scrollUntilVisible(find.text('Añadir producto'), -300);
+    await tester.tap(find.text('Añadir producto'));
+    await tester.pumpAndSettle();
+    await _comprobarGuias(tester);
+
+    // Estado de error: nombre vacío.
+    await tester.tap(find.text('Añadir a la lista'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text(
+        'Falta el nombre del producto. Escríbelo para añadirlo a la lista.',
+      ),
+      findsOneWidget,
+    );
+    await _comprobarGuias(tester);
+
+    // Estado de aviso: el producto ya existe.
+    await tester.enterText(find.byKey(const Key('productNameField')), 'leche');
+    await tester.tap(find.text('Añadir a la lista'));
+    await tester.pumpAndSettle();
+    expect(find.text('Sumar cantidad al existente'), findsOneWidget);
+    await _comprobarGuias(tester);
     handle.dispose();
   });
+}
+
+/// Guías de accesibilidad de Flutter que debe cumplir cada pantalla.
+Future<void> _comprobarGuias(WidgetTester tester) async {
+  // Objetivos táctiles de al menos 48 × 48 (Android).
+  await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+  // Todo control pulsable tiene nombre accesible.
+  await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+  // Contraste mínimo del texto (WCAG AA).
+  await expectLater(tester, meetsGuideline(textContrastGuideline));
 }
