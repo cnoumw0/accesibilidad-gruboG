@@ -34,7 +34,14 @@ class _AnadirScreenState extends State<AnadirScreen> {
   }
 
   void _submit() {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      // El error se ve bajo el campo; también se anuncia al lector de pantalla.
+      AppFeedback.announce(
+        context,
+        'No se ha podido añadir. Revisa el mensaje de error bajo cada campo.',
+      );
+      return;
+    }
     final appState = AppState.instance;
     final duplicate = appState.buscarDuplicado(_nombreController.text);
     if (duplicate != null) {
