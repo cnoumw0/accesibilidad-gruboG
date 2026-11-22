@@ -49,14 +49,18 @@ class _AccesoScreenState extends State<AccesoScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      'eLIST',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineLarge
-                          ?.copyWith(
-                            fontSize: 36,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
+                    // Título de la pantalla: TalkBack lo anuncia como encabezado.
+                    Semantics(
+                      header: true,
+                      child: Text(
+                        'eLIST',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.headlineLarge
+                            ?.copyWith(
+                              fontSize: 36,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
