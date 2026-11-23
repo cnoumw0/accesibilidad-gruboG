@@ -139,19 +139,30 @@ class _AnadirScreenState extends State<AnadirScreen> {
                   : null,
               onFieldSubmitted: (_) => _submit(),
             ),
-            const SizedBox(height: 16),
-            TextFormField(
-              key: const Key('productNoteField'),
-              controller: _notaController,
-              textInputAction: TextInputAction.next,
-              maxLength: 100,
-              decoration: const InputDecoration(
-                labelText: 'Observaciones (opcional)',
-                helperText: 'Por ejemplo, una marca o un tipo concreto.',
-              ),
+            // Campos opcionales plegados: así el formulario principal es corto.
+            ExpansionTile(
+              title: const Text('Más detalles (opcional)'),
+              subtitle: const Text('Observaciones y supermercado'),
+              tilePadding: EdgeInsets.zero,
+              childrenPadding: const EdgeInsets.only(bottom: 8),
+              shape: const Border(),
+              collapsedShape: const Border(),
+              initiallyExpanded: false,
+              children: [
+                TextFormField(
+                  key: const Key('productNoteField'),
+                  controller: _notaController,
+                  textInputAction: TextInputAction.next,
+                  maxLength: 100,
+                  decoration: const InputDecoration(
+                    labelText: 'Observaciones',
+                    helperText: 'Una marca o un tipo',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                CampoSupermercado(controller: _supermercadoController),
+              ],
             ),
-            const SizedBox(height: 16),
-            CampoSupermercado(controller: _supermercadoController),
             if (duplicate != null) ...[
               const SizedBox(height: 16),
               Semantics(

@@ -49,9 +49,36 @@ class ProductoTile extends StatelessWidget {
                           ?.copyWith(fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      '${producto.cantidad} '
-                      '${producto.cantidad == 1 ? 'unidad' : 'unidades'}',
+                    // Cantidad y estado en la misma línea para ahorrar altura.
+                    Wrap(
+                      spacing: 12,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(
+                          '${producto.cantidad} '
+                          '${producto.cantidad == 1 ? 'unidad' : 'unidades'}',
+                        ),
+                        Chip(
+                          avatar: Icon(
+                            producto.comprado
+                                ? Icons.check_circle_outline
+                                : Icons.pending_outlined,
+                            size: 18,
+                            color: producto.comprado
+                                ? AppColors.verdeElist
+                                : const Color(0xFF704800),
+                          ),
+                          label: Text(estado),
+                          backgroundColor: producto.comprado
+                              ? AppColors.fondoExito
+                              : const Color(0xFFFFF4D6),
+                          side: BorderSide(
+                            color: producto.comprado
+                                ? AppColors.verdeElist
+                                : const Color(0xFF704800),
+                          ),
+                        ),
+                      ],
                     ),
                     if (producto.nota.isNotEmpty) ...[
                       const SizedBox(height: 4),
@@ -61,27 +88,6 @@ class ProductoTile extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text('Supermercado: ${producto.supermercado}'),
                     ],
-                    const SizedBox(height: 8),
-                    Chip(
-                      avatar: Icon(
-                        producto.comprado
-                            ? Icons.check_circle_outline
-                            : Icons.pending_outlined,
-                        size: 18,
-                        color: producto.comprado
-                            ? AppColors.verdeElist
-                            : const Color(0xFF704800),
-                      ),
-                      label: Text(estado),
-                      backgroundColor: producto.comprado
-                          ? AppColors.fondoExito
-                          : const Color(0xFFFFF4D6),
-                      side: BorderSide(
-                        color: producto.comprado
-                            ? AppColors.verdeElist
-                            : const Color(0xFF704800),
-                      ),
-                    ),
                   ],
                 ),
               ),

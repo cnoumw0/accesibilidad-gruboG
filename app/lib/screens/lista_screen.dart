@@ -94,6 +94,8 @@ class _ListaScreenState extends State<ListaScreen> {
           final pendientes = appState.productos
               .where((item) => !item.comprado)
               .toList();
+          // Como mucho dos avisos a la vez, para que la lista empiece pronto.
+          final recordatorios = appState.recordatorios;
           final comprados = appState.productos
               .where((item) => item.comprado)
               .toList();
@@ -156,7 +158,7 @@ class _ListaScreenState extends State<ListaScreen> {
                 label: const Text('Añadir producto'),
               ),
               const SizedBox(height: 20),
-              if (appState.recordatorios.isNotEmpty) ...[
+              if (recordatorios.isNotEmpty) ...[
                 Semantics(
                   header: true,
                   child: Text(
@@ -164,7 +166,7 @@ class _ListaScreenState extends State<ListaScreen> {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
-                for (final habitual in appState.recordatorios)
+                for (final habitual in recordatorios.take(2))
                   _Recordatorio(
                     habitual: habitual,
                     onAnadir: () {
@@ -181,6 +183,14 @@ class _ListaScreenState extends State<ListaScreen> {
                         'Vale, te preguntaré por ${habitual.nombre} dentro de tres días.',
                       );
                     },
+                  ),
+                if (recordatorios.length > 2)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      'Hay ${recordatorios.length - 2} recordatorios más. '
+                      'Aparecerán cuando respondas a estos.',
+                    ),
                   ),
                 const SizedBox(height: 16),
               ],

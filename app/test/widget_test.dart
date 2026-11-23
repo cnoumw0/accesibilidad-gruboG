@@ -55,6 +55,10 @@ void main() {
     await tester.tap(find.text('Añadir producto'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('productCategoryField')), findsOneWidget);
+    // Observaciones y supermercado están plegados hasta que se pide verlos.
+    expect(find.byKey(const Key('productNoteField')), findsNothing);
+    await tester.tap(find.text('Más detalles (opcional)'));
+    await tester.pumpAndSettle();
     expect(find.byKey(const Key('productNoteField')), findsOneWidget);
     // Con la categoría «Otros» no hay sugerencias; con una concreta sí.
     await _comprobarGuias(tester);

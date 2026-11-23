@@ -29,8 +29,8 @@ class CampoSupermercado extends StatelessWidget {
           textInputAction: TextInputAction.next,
           maxLength: 40,
           decoration: const InputDecoration(
-            labelText: 'Supermercado (opcional)',
-            helperText: 'Dónde sale más económico comprarlo.',
+            labelText: 'Supermercado',
+            helperText: 'Dónde sale más barato',
           ),
         ),
         Wrap(

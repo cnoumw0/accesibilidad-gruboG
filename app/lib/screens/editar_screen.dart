@@ -160,19 +160,30 @@ class _EditarScreenState extends State<EditarScreen> {
                   ? 'La cantidad no es válida. Escribe un número entero mayor que cero, por ejemplo 1.'
                   : null,
             ),
-            const SizedBox(height: 16),
-            TextFormField(
-              key: const Key('productNoteField'),
-              controller: _notaController,
-              textInputAction: TextInputAction.next,
-              maxLength: 100,
-              decoration: const InputDecoration(
-                labelText: 'Observaciones (opcional)',
-                helperText: 'Por ejemplo, una marca o un tipo concreto.',
-              ),
+            // Campos opcionales plegados: así el formulario principal es corto.
+            ExpansionTile(
+              title: const Text('Más detalles (opcional)'),
+              subtitle: const Text('Observaciones y supermercado'),
+              tilePadding: EdgeInsets.zero,
+              childrenPadding: const EdgeInsets.only(bottom: 8),
+              shape: const Border(),
+              collapsedShape: const Border(),
+              initiallyExpanded: item.nota.isNotEmpty || item.supermercado.isNotEmpty,
+              children: [
+                TextFormField(
+                  key: const Key('productNoteField'),
+                  controller: _notaController,
+                  textInputAction: TextInputAction.next,
+                  maxLength: 100,
+                  decoration: const InputDecoration(
+                    labelText: 'Observaciones',
+                    helperText: 'Una marca o un tipo',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                CampoSupermercado(controller: _supermercadoController),
+              ],
             ),
-            const SizedBox(height: 16),
-            CampoSupermercado(controller: _supermercadoController),
             const SizedBox(height: 16),
             Align(
               alignment: Alignment.centerLeft,
