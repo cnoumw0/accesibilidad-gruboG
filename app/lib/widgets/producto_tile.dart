@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../models/producto.dart';
+import '../theme/app_theme.dart';
 
 class ProductoTile extends StatelessWidget {
   const ProductoTile({
@@ -21,8 +22,8 @@ class ProductoTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 6),
       color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: const BorderSide(color: Color(0xFF65758B)),
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: AppColors.bordeSuave),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -33,7 +34,9 @@ class ProductoTile extends StatelessWidget {
               container: true,
               label:
                   '${producto.nombre}, ${producto.cantidad} '
-                  '${producto.cantidad == 1 ? 'unidad' : 'unidades'}, $estado',
+                  '${producto.cantidad == 1 ? 'unidad' : 'unidades'}, $estado'
+                  '${producto.nota.isEmpty ? '' : ', observaciones: ${producto.nota}'}'
+                  '${producto.supermercado.isEmpty ? '' : ', supermercado: ${producto.supermercado}'}',
               // El texto visible ya está resumido en la etiqueta del contenedor;
               // se excluye para que TalkBack no lea el producto dos veces.
               child: ExcludeSemantics(
@@ -50,6 +53,14 @@ class ProductoTile extends StatelessWidget {
                       '${producto.cantidad} '
                       '${producto.cantidad == 1 ? 'unidad' : 'unidades'}',
                     ),
+                    if (producto.nota.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text('Observaciones: ${producto.nota}'),
+                    ],
+                    if (producto.supermercado.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text('Supermercado: ${producto.supermercado}'),
+                    ],
                     const SizedBox(height: 8),
                     Chip(
                       avatar: Icon(
@@ -58,16 +69,16 @@ class ProductoTile extends StatelessWidget {
                             : Icons.pending_outlined,
                         size: 18,
                         color: producto.comprado
-                            ? const Color(0xFF12665B)
+                            ? AppColors.verdeElist
                             : const Color(0xFF704800),
                       ),
                       label: Text(estado),
                       backgroundColor: producto.comprado
-                          ? const Color(0xFFE8F3F0)
+                          ? AppColors.fondoExito
                           : const Color(0xFFFFF4D6),
                       side: BorderSide(
                         color: producto.comprado
-                            ? const Color(0xFF12665B)
+                            ? AppColors.verdeElist
                             : const Color(0xFF704800),
                       ),
                     ),

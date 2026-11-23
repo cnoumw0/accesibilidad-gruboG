@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 
+import '../models/categoria.dart';
+import '../models/habitual.dart';
 import '../models/producto.dart';
 import '../state/app_state.dart';
+import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/producto_tile.dart';
 
@@ -69,6 +72,11 @@ class _ListaScreenState extends State<ListaScreen> {
         ),
         actions: [
           IconButton(
+            tooltip: 'Menú de la semana',
+            onPressed: () => context.push('/menu'),
+            icon: const Icon(Icons.restaurant_menu),
+          ),
+          IconButton(
             tooltip: 'Actividad',
             onPressed: () => context.push('/actividad'),
             icon: const Icon(Icons.history),
@@ -102,7 +110,7 @@ class _ListaScreenState extends State<ListaScreen> {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: const Color(0xFFEAF1F8),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: const Color(0xFF65758B)),
                     ),
                     child: Text(_textoAviso),
@@ -117,7 +125,7 @@ class _ListaScreenState extends State<ListaScreen> {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: const Color(0xFFEAF1F8),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: const Color(0xFF65758B)),
                     ),
                     child: Column(
@@ -148,6 +156,34 @@ class _ListaScreenState extends State<ListaScreen> {
                 label: const Text('Añadir producto'),
               ),
               const SizedBox(height: 20),
+              if (appState.recordatorios.isNotEmpty) ...[
+                Semantics(
+                  header: true,
+                  child: Text(
+                    'Por si acaso',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                for (final habitual in appState.recordatorios)
+                  _Recordatorio(
+                    habitual: habitual,
+                    onAnadir: () {
+                      appState.anadirHabitual(habitual);
+                      AppFeedback.mostrarEnLista(
+                        context,
+                        '${habitual.nombre} añadido a la lista.',
+                      );
+                    },
+                    onAhoraNo: () {
+                      appState.posponerHabitual(habitual);
+                      AppFeedback.mostrarEnLista(
+                        context,
+                        'Vale, te preguntaré por ${habitual.nombre} dentro de tres días.',
+                      );
+                    },
+                  ),
+                const SizedBox(height: 16),
+              ],
               _SeccionProductos(
                 titulo: 'Pendientes',
                 productos: pendientes,
@@ -217,13 +253,84 @@ class _SeccionProductos extends StatelessWidget {
             ),
           )
         else
-          for (final item in productos)
-            ProductoTile(
-              producto: item,
-              onCambiarEstado: () => onCambiarEstado(item),
-              onEditar: () => onEditar(item),
-            ),
+          // Productos agrupados por sección del supermercado, en el orden en
+          // que se recorre la tienda.
+          for (final categoria in Categoria.values)
+            if (productos.any((item) => item.categoria == categoria)) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 12, bottom: 2, left: 4),
+                child: Semantics(
+                  header: true,
+                  child: Row(
+                    children: [
+                      Icon(categoria.icono, color: AppColors.verdeElist),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          categoria.etiqueta,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                color: AppColors.verdeElist,
+                                fontWeight: FontWeight.w700,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              for (final item in productos.where(
+                (item) => item.categoria == categoria,
+              ))
+                ProductoTile(
+                  producto: item,
+                  onCambiarEstado: () => onCambiarEstado(item),
+                  onEditar: () => onEditar(item),
+                ),
+            ],
       ],
+    );
+  }
+}
+
+class _Recordatorio extends StatelessWidget {
+  const _Recordatorio({
+    required this.habitual,
+    required this.onAnadir,
+    required this.onAhoraNo,
+  });
+
+  final Habitual habitual;
+  final VoidCallback onAnadir;
+  final VoidCallback onAhoraNo;
+
+  @override
+  Widget build(BuildContext context) {
+    final dias = habitual.diasDesdeUltimaCompra(DateTime.now());
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Hace $dias días que no compras ${habitual.nombre}. '
+              '¿Lo quieres en la lista?',
+            ),
+            const SizedBox(height: 8),
+            FilledButton.tonal(
+              onPressed: onAnadir,
+              child: Text('Añadir ${habitual.nombre} a la lista'),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton(
+              onPressed: onAhoraNo,
+              child: Text('Ahora no, ${habitual.nombre}'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -4,7 +4,7 @@
 // pantalla Lista cumple las guías de accesibilidad que incluye Flutter
 // (Accessibility Guideline API).
 
-import 'package:flutter/widgets.dart' show Key, Offset;
+import 'package:flutter/widgets.dart' show Key, Offset, Size;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:elist_app/main.dart';
@@ -15,6 +15,11 @@ void main() {
     WidgetTester tester,
   ) async {
     final handle = tester.ensureSemantics();
+    // Pantalla alta: la pantalla Añadir tiene ahora más campos y así se ve
+    // entera, con todos sus botones, sin tener que desplazarla en el test.
+    tester.view.physicalSize = const Size(800, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(const ElistApp());
     await tester.enterText(
       find.byKey(const Key('familyCodeField')),
@@ -28,6 +33,9 @@ void main() {
     expect(find.text('Familia Gómez'), findsOneWidget);
     expect(find.text('Leche'), findsOneWidget);
     expect(find.text('Pendientes'), findsOneWidget);
+    // Los productos se agrupan por sección del supermercado.
+    expect(find.text('Lácteos y alternativas'), findsOneWidget);
+    expect(find.text('Panadería'), findsOneWidget);
 
     // Se quita el aviso inferior para comprobar solo la pantalla Lista.
     AppFeedback.messengerKey.currentState?.clearSnackBars();
@@ -46,6 +54,9 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Añadir producto'));
     await tester.pumpAndSettle();
+    expect(find.byKey(const Key('productCategoryField')), findsOneWidget);
+    expect(find.byKey(const Key('productNoteField')), findsOneWidget);
+    // Con la categoría «Otros» no hay sugerencias; con una concreta sí.
     await _comprobarGuias(tester);
 
     // Estado de error: nombre vacío.

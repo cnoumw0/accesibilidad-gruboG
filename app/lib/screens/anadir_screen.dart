@@ -1,9 +1,12 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 
+import '../models/categoria.dart';
 import '../models/producto.dart';
 import '../state/app_state.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/campo_supermercado.dart';
+import '../widgets/selector_categoria.dart';
 
 class AnadirScreen extends StatefulWidget {
   const AnadirScreen({super.key});
@@ -17,12 +20,17 @@ class _AnadirScreenState extends State<AnadirScreen> {
   final _nombreFocus = FocusNode();
   final _nombreController = TextEditingController();
   final _cantidadController = TextEditingController(text: '1');
+  final _notaController = TextEditingController();
+  final _supermercadoController = TextEditingController();
   Producto? _duplicado;
+  Categoria _categoria = Categoria.otros;
 
   @override
   void dispose() {
     _nombreController.dispose();
     _cantidadController.dispose();
+    _notaController.dispose();
+    _supermercadoController.dispose();
     _nombreFocus.dispose();
     super.dispose();
   }
@@ -55,7 +63,13 @@ class _AnadirScreenState extends State<AnadirScreen> {
     final name = _nombreController.text.trim();
     final quantity = _cantidad()!;
     final wasDuplicate = AppState.instance.buscarDuplicado(name) != null;
-    AppState.instance.anadir(name, quantity);
+    AppState.instance.anadir(
+      name,
+      quantity,
+      _categoria,
+      _notaController.text,
+      _supermercadoController.text,
+    );
     AppFeedback.mostrarEnLista(
       context,
       wasDuplicate
@@ -85,6 +99,15 @@ class _AnadirScreenState extends State<AnadirScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            SelectorCategoria(
+              categoria: _categoria,
+              onCategoria: (value) => setState(() => _categoria = value),
+              onSugerencia: (nombre) => setState(() {
+                _nombreController.text = nombre;
+                _duplicado = null;
+              }),
+            ),
+            const SizedBox(height: 16),
             TextFormField(
               key: const Key('productNameField'),
               controller: _nombreController,
@@ -116,6 +139,19 @@ class _AnadirScreenState extends State<AnadirScreen> {
                   : null,
               onFieldSubmitted: (_) => _submit(),
             ),
+            const SizedBox(height: 16),
+            TextFormField(
+              key: const Key('productNoteField'),
+              controller: _notaController,
+              textInputAction: TextInputAction.next,
+              maxLength: 100,
+              decoration: const InputDecoration(
+                labelText: 'Observaciones (opcional)',
+                helperText: 'Por ejemplo, una marca o un tipo concreto.',
+              ),
+            ),
+            const SizedBox(height: 16),
+            CampoSupermercado(controller: _supermercadoController),
             if (duplicate != null) ...[
               const SizedBox(height: 16),
               Semantics(
@@ -124,7 +160,7 @@ class _AnadirScreenState extends State<AnadirScreen> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFF4D6),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: const Color(0xFF704800)),
                   ),
                   child: Column(

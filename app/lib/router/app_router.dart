@@ -6,6 +6,7 @@ import '../screens/anadir_screen.dart';
 import '../screens/editar_screen.dart';
 import '../screens/familia_screen.dart';
 import '../screens/lista_screen.dart';
+import '../screens/menu_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -18,6 +19,7 @@ final appRouter = GoRouter(
       builder: (context, state) =>
           EditarScreen(id: state.pathParameters['id'] ?? ''),
     ),
+    GoRoute(path: '/menu', builder: (context, state) => const MenuScreen()),
     GoRoute(
       path: '/actividad',
       builder: (context, state) => const ActividadScreen(),

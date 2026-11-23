@@ -1,9 +1,13 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 
+import '../models/categoria.dart';
 import '../models/producto.dart';
 import '../state/app_state.dart';
+import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/campo_supermercado.dart';
+import '../widgets/selector_categoria.dart';
 
 class EditarScreen extends StatefulWidget {
   const EditarScreen({required this.id, super.key});
@@ -18,12 +22,17 @@ class _EditarScreenState extends State<EditarScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nombreController = TextEditingController();
   final _cantidadController = TextEditingController();
+  final _notaController = TextEditingController();
+  final _supermercadoController = TextEditingController();
+  Categoria _categoria = Categoria.otros;
   bool _initialized = false;
 
   @override
   void dispose() {
     _nombreController.dispose();
     _cantidadController.dispose();
+    _notaController.dispose();
+    _supermercadoController.dispose();
     super.dispose();
   }
 
@@ -31,6 +40,9 @@ class _EditarScreenState extends State<EditarScreen> {
     if (_initialized) return;
     _nombreController.text = item.nombre;
     _cantidadController.text = '${item.cantidad}';
+    _categoria = item.categoria;
+    _notaController.text = item.nota;
+    _supermercadoController.text = item.supermercado;
     _initialized = true;
   }
 
@@ -57,6 +69,9 @@ class _EditarScreenState extends State<EditarScreen> {
       item.id,
       _nombreController.text,
       _quantity()!,
+      _categoria,
+      _notaController.text,
+      _supermercadoController.text,
     );
     AppFeedback.mostrarEnLista(context, 'Cambios guardados.');
     context.go('/lista');
@@ -109,6 +124,12 @@ class _EditarScreenState extends State<EditarScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            SelectorCategoria(
+              categoria: _categoria,
+              onCategoria: (value) => setState(() => _categoria = value),
+              onSugerencia: (nombre) => setState(() => _nombreController.text = nombre),
+            ),
+            const SizedBox(height: 16),
             TextFormField(
               controller: _nombreController,
               textInputAction: TextInputAction.next,
@@ -140,6 +161,19 @@ class _EditarScreenState extends State<EditarScreen> {
                   : null,
             ),
             const SizedBox(height: 16),
+            TextFormField(
+              key: const Key('productNoteField'),
+              controller: _notaController,
+              textInputAction: TextInputAction.next,
+              maxLength: 100,
+              decoration: const InputDecoration(
+                labelText: 'Observaciones (opcional)',
+                helperText: 'Por ejemplo, una marca o un tipo concreto.',
+              ),
+            ),
+            const SizedBox(height: 16),
+            CampoSupermercado(controller: _supermercadoController),
+            const SizedBox(height: 16),
             Align(
               alignment: Alignment.centerLeft,
               child: Chip(
@@ -150,7 +184,7 @@ class _EditarScreenState extends State<EditarScreen> {
                 ),
                 label: Text(item.estado),
                 backgroundColor: item.comprado
-                    ? const Color(0xFFE8F3F0)
+                    ? AppColors.fondoExito
                     : const Color(0xFFFFF4D6),
               ),
             ),
