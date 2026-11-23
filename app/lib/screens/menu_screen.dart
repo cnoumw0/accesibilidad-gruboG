@@ -22,7 +22,7 @@ class MenuScreen extends StatelessWidget {
     } else {
       mensaje =
           'Se añadieron $nuevos productos $quien a la lista. '
-          '$existentes ya estaban.';
+          '${existentes == 1 ? '1 ya estaba' : '$existentes ya estaban'}.';
     }
     AppFeedback.mostrarEnLista(context, mensaje);
     context.go('/lista');

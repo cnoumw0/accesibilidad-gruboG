@@ -272,8 +272,19 @@ class AppState extends ChangeNotifier {
     var existentes = 0;
     for (final linea in MenuSemanal.compra(dias)) {
       final ingrediente = linea.ingrediente;
-      if (buscarDuplicado(ingrediente.nombreCompleto) != null) {
-        existentes++;
+      // Se busca por el nombre sin el formato, para que «Arroz» y
+      // «Arroz (1 kg)» cuenten como el mismo producto.
+      final enLista =
+          buscarDuplicado(ingrediente.nombre) ??
+          buscarDuplicado(ingrediente.nombreCompleto);
+      if (enLista != null) {
+        if (enLista.comprado) {
+          // Ya estaba comprado: vuelve a pendiente para la nueva compra.
+          _reemplazar(enLista.copyWith(comprado: false, limpiarComprador: true));
+          nuevos++;
+        } else {
+          existentes++;
+        }
         continue;
       }
       _productos.add(

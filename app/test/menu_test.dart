@@ -3,6 +3,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:elist_app/data/menu_semanal.dart';
+import 'package:elist_app/state/app_state.dart';
 
 void main() {
   test('1 kg de lentejas da para cuatro días: dos días usan un paquete', () {
@@ -22,5 +23,16 @@ void main() {
   test('un solo día pide un paquete de cada ingrediente', () {
     final lineas = MenuSemanal.compra([MenuSemanal.dias.first]);
     expect(lineas.every((l) => l.paquetes == 1), isTrue);
+  });
+
+  test('añadir el menú no duplica lo que ya está en la lista', () {
+    final appState = AppState.instance..entrar();
+    final lunes = [MenuSemanal.dias.first];
+    // Los huevos ya estaban pendientes en la lista de ejemplo.
+    final primera = appState.anadirMenu(lunes);
+    expect(primera, (6, 1));
+    // Repetir la acción no añade nada nuevo.
+    final segunda = appState.anadirMenu(lunes);
+    expect(segunda, (0, 7));
   });
 }
