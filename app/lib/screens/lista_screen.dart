@@ -336,7 +336,7 @@ class _Recordatorio extends StatelessWidget {
             const SizedBox(height: 8),
             OutlinedButton(
               onPressed: onAhoraNo,
-              child: Text('Ahora no, ${habitual.nombre}'),
+              child: Text('${habitual.nombre}, ahora no'),
             ),
           ],
         ),
