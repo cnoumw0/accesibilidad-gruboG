@@ -166,7 +166,7 @@ class _ListaScreenState extends State<ListaScreen> {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
-                for (final habitual in recordatorios.take(2))
+                for (final habitual in recordatorios.take(1))
                   _Recordatorio(
                     habitual: habitual,
                     onAnadir: () {
@@ -184,12 +184,15 @@ class _ListaScreenState extends State<ListaScreen> {
                       );
                     },
                   ),
-                if (recordatorios.length > 2)
+                if (recordatorios.length > 1)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
-                      'Hay ${recordatorios.length - 2} recordatorios más. '
-                      'Aparecerán cuando respondas a estos.',
+                      recordatorios.length == 2
+                          ? 'Hay 1 recordatorio más. '
+                                'Aparecerá cuando respondas a este.'
+                          : 'Hay ${recordatorios.length - 1} recordatorios más. '
+                                'Aparecerán cuando respondas a este.',
                     ),
                   ),
                 const SizedBox(height: 16),
@@ -336,7 +339,7 @@ class _Recordatorio extends StatelessWidget {
             const SizedBox(height: 8),
             OutlinedButton(
               onPressed: onAhoraNo,
-              child: Text('${habitual.nombre}, ahora no'),
+              child: Text('${habitual.nombre} ahora no'),
             ),
           ],
         ),

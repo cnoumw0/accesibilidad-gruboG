@@ -93,17 +93,35 @@ class ProductoTile extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            FilledButton.tonal(
-              onPressed: onCambiarEstado,
-              child: Text(
-                'Marcar ${producto.nombre} como '
-                '${producto.comprado ? 'pendiente' : 'comprado'}',
-              ),
-            ),
-            const SizedBox(height: 8),
-            OutlinedButton(
-              onPressed: onEditar,
-              child: Text('Editar o eliminar ${producto.nombre}'),
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton.tonal(
+                    onPressed: onCambiarEstado,
+                    child: Text(
+                      'Marcar ${producto.nombre} como '
+                      '${producto.comprado ? 'pendiente' : 'comprado'}',
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton.outlined(
+                  onPressed: onEditar,
+                  icon: const Icon(Icons.edit_outlined),
+                  tooltip: 'Editar o eliminar ${producto.nombre}',
+                  style: IconButton.styleFrom(
+                    foregroundColor: AppColors.textoPrincipal,
+                    side: const BorderSide(
+                      color: AppColors.textoPrincipal,
+                      width: 1.5,
+                    ),
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 48,
+                    minHeight: 48,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
